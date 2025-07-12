@@ -1,0 +1,62 @@
+[
+  { 
+    "id": 1, 
+    "firstName": "Alice",
+    "lastName": "Smith",
+    "email": "alice@example.com", 
+    "position": "Developer", 
+    "department": "Engineering",
+    "phoneNumber": "123-456-7890",
+    "joiningDate": "2020-01-15",
+    "jobId": "DEV123",
+    "salary": 60000,
+    "commissionPct": 0.1,
+    "managerId": 2,
+    "departmentId": 3
+  }, 
+  { 
+    "id": 2, 
+    "firstName": "Alice",
+    "lastName": "Smith",
+    "email": "alice@example.com", 
+    "position": "Developer", 
+    "department": "Engineering",
+    "phoneNumber": "123-456-7890",
+    "joiningDate": "2020-01-15",
+    "jobId": "DEV123",
+    "salary": 60000,
+    "commissionPct": 0.1,
+    "managerId": 2,
+    "departmentId": 3
+  }, 
+  { 
+    "id": 3, 
+    "firstName": "Alice",
+    "lastName": "Smith",
+    "email": "alice@example.com", 
+    "position": "Developer", 
+    "department": "Engineering",
+    "phoneNumber": "123-456-7890",
+    "joiningDate": "2020-01-15",
+    "jobId": "DEV123",
+    "salary": 60000,
+    "commissionPct": 0.1,
+    "managerId": 2,
+    "departmentId": 3
+  }, 
+  { 
+    "id": 4, 
+    "firstName": "Alice",
+    "lastName": "Smith",
+    "email": "alice@example.com", 
+    "position": "Developer", 
+    "department": "Engineering",
+    "phoneNumber": "123-456-7890",
+    "joiningDate": "2020-01-15",
+    "jobId": "DEV123",
+    "salary": 60000,
+    "commissionPct": 0.1,
+    "managerId": 2,
+    "departmentId": 3
+  }
+]
