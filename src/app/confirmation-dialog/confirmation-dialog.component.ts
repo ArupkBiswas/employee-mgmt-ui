@@ -23,7 +23,6 @@ export class ConfirmationDialog {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
-      width: '300px',
       data: { message: 'Are you sure you want to delete this employee?', employeeId: this.data.employeeId }
     });
 
@@ -39,7 +38,7 @@ export class ConfirmationDialog {
   }
 
   onConfirm(employeeId: number) {
-  this.http.delete(`http://localhost:8443/api/v1/employee/${employeeId}`, { observe: 'response' })
+  this.http.delete(`http://localhost:8443/api/v1/employee/delete/${employeeId}`, { observe: 'response' })
     .subscribe({
       next: (response) => {
         console.log('Deleted successfully:', response.status);

@@ -38,9 +38,17 @@ export class EmployeeDialogComponent {
 
   onSubmit(): void {
     if (this.employeeForm.valid) {
-      this.employeeService.addEmployee(this.employeeForm.value).subscribe(() => {
-        this.dialogRef.close(true); // signal success
+      this.employeeService.addEmployee(this.employeeForm.value).subscribe({
+        next: () => {
+          this.dialogRef.close(true); // signal success
+        },
+        error: (err) => {
+          console.error('Error adding employee:', err);
+          alert(`Error: ${err.message}`);
+        }
       });
+    } else {
+      alert('Please fill in all required fields.');
     }
   }
 

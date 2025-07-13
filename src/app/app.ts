@@ -1,4 +1,4 @@
-import { Component, NgModule, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, inject, NgModule, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { routes } from './app.routes';
@@ -15,7 +15,10 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EmployeeDialogComponent } from './employee-dialog/employee-dialog.component';
 import { ConfirmationDialog } from './confirmation-dialog/confirmation-dialog.component';
+import { EditDialogComponent } from './edit-dialog/edit-dialog.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
+// Import the necessary modules and components
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -36,7 +39,7 @@ import { ConfirmationDialog } from './confirmation-dialog/confirmation-dialog.co
   encapsulation: ViewEncapsulation.None
 })
 
-
+// Main application component
 export class App implements OnInit {
 
   displayedColumns: string[] = [
@@ -54,13 +57,16 @@ export class App implements OnInit {
     'actions'
   ];
   employees: any[] = [];
+  private snackBar =  inject(MatSnackBar);
 
   ngOnInit() {
     this.getEmployees();
   }
 
+  // Inject MatDialog to open dialogs
   constructor(private dialog: MatDialog, private http: HttpClient) {}
 
+  // Open dialog to add new employee
   addEmployee() {
     const dialogRef = this.dialog.open(EmployeeDialogComponent, {
       width: '600px'
@@ -73,25 +79,25 @@ export class App implements OnInit {
     });
   }
 
-  // deleteEmployee(employeeId: number) {
-  //   this.http.delete(`http://localhost:8443/api/v1/employee/${employeeId}`).subscribe({
-  //     next: () => this.getEmployees(), // Refresh list after deletion
-  //     error: (err) => console.error('Failed to delete employee', err)
-  //   });
-  // }
-//   deleteEmployee(employeeId: number) {
-//   this.http.delete(`http://localhost:8443/api/v1/employee/${employeeId}`, { observe: 'response' })
-//     .subscribe({
-//       next: (response) => {
-//         console.log('Deleted successfully:', response.status); // Expect 204
-//         this.getEmployees();
-//       },
-//       error: (err) => {
-//         console.error('Delete failed:', err.status, err.message);
-//         alert(`Error ${err.status}: ${err.message}`);
-//       }
-//     });
-// }
+  // Open edit dialog
+  openEditDialog(employee: any) {
+    
+    const dialogRef = this.dialog.open(EditDialogComponent, {
+      width: '600px',
+      data: employee // Pass the employee data to the dialog
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getEmployees(); // Refresh list after edit
+        this.snackBar.open('Employee updated successfully', 'Close', {
+          duration: 6000
+        });
+      }
+    });
+  }
+
+  // Open confirmation dialog for deletion
   openDialogForDelete(employeeId: number) {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       width: '300px',
@@ -100,11 +106,15 @@ export class App implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'deleted') {
+        this.snackBar.open('Employee deleted successfully', 'Close', {
+          duration: 6000
+        });
         this.getEmployees(); // Refresh list after confirmation
       }
     });
   }
 
+  // Fetch employees from the server
   getEmployees() {
     this.http.get<any[]>('http://localhost:8443/api/v1/employee/all').subscribe({
       next: (data) => this.employees = data,
