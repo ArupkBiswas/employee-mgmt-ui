@@ -9,6 +9,6 @@ export class EmployeeService {
   constructor(private http: HttpClient) {}
 
   addEmployee(employee: any): Observable<any> {
-    return this.http.post('/api/employees', employee); // replace with your backend endpoint
+    return this.http.post('http://localhost:8443/api/v1/employee/add', employee); // replace with your backend endpoint
   }
 }

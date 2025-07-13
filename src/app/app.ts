@@ -14,16 +14,17 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EmployeeDialogComponent } from './employee-dialog/employee-dialog.component';
+import { ConfirmationDialog } from './confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterModule, 
-    MatToolbarModule, 
-    MatTableModule, 
-    MatButtonModule, 
-    MatDialogModule, 
-    MatFormFieldModule, 
+  imports: [RouterModule,
+    MatToolbarModule,
+    MatTableModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
     MatInputModule, 
     ReactiveFormsModule, 
     MatDatepickerModule, 
@@ -68,6 +69,38 @@ export class App implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.getEmployees(); // Refresh list
+      }
+    });
+  }
+
+  // deleteEmployee(employeeId: number) {
+  //   this.http.delete(`http://localhost:8443/api/v1/employee/${employeeId}`).subscribe({
+  //     next: () => this.getEmployees(), // Refresh list after deletion
+  //     error: (err) => console.error('Failed to delete employee', err)
+  //   });
+  // }
+//   deleteEmployee(employeeId: number) {
+//   this.http.delete(`http://localhost:8443/api/v1/employee/${employeeId}`, { observe: 'response' })
+//     .subscribe({
+//       next: (response) => {
+//         console.log('Deleted successfully:', response.status); // Expect 204
+//         this.getEmployees();
+//       },
+//       error: (err) => {
+//         console.error('Delete failed:', err.status, err.message);
+//         alert(`Error ${err.status}: ${err.message}`);
+//       }
+//     });
+// }
+  openDialogForDelete(employeeId: number) {
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
+      width: '300px',
+      data: { message: 'Are you sure you want to delete this employee?', employeeId : employeeId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'deleted') {
+        this.getEmployees(); // Refresh list after confirmation
       }
     });
   }
