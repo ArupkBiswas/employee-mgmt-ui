@@ -98,10 +98,9 @@ export class App implements OnInit {
   }
 
   // Open confirmation dialog for deletion
-  openDialogForDelete(employeeId: number) {
+  openDialogForDelete(employee: any) {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
-      width: '300px',
-      data: { message: 'Are you sure you want to delete this employee?', employeeId : employeeId }
+      data: { message: `[ ID : ${employee.id} ] ${employee.firstName} ${employee.lastName}, Are you sure you want to delete this employee ?`, employeeId: employee.id }
     });
 
     dialogRef.afterClosed().subscribe(result => {
