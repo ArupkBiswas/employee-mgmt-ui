@@ -64,8 +64,7 @@
     <th mat-header-cell *matHeaderCellDef> Actions </th>
     <td mat-cell *matCellDef="let employee">
       <button mat-raised-button (click)="openEditDialog(employee)" color="primary">Edit</button>
-      <button mat-stroked-button (click)="openDialogForDelete(employee.id)" color="warn">Delete</button>
-      <!-- <button mat-stroked-button (click)="deleteEmployee(employee.id)" color="warn">Delete</button> -->
+      <button mat-stroked-button (click)="openDialogForDelete(employee)" color="warn">Delete</button>
     </td>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

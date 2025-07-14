@@ -23,7 +23,7 @@ export class ConfirmationDialog {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
-      data: { message: 'Are you sure you want to delete this employee?', employeeId: this.data.employeeId }
+      data: { employeeId: this.data.employeeId }
     });
 
     dialogRef.afterClosed().subscribe(result => {

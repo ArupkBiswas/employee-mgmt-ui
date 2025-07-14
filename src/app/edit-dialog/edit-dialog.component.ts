@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { HttpClient } from '@angular/common/http';
 import { EditDialogService } from './edit.employee.service'; // Assuming you have a service to handle employee data
 
 @Component({
@@ -19,6 +20,7 @@ export class EditDialogComponent {
     private dialogRef: MatDialogRef<EditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
+    private http: HttpClient,
     private employeeService: EditDialogService // Assuming you have a service to handle employee data
   ) {
     this.employeeForm = this.fb.group({
@@ -37,26 +39,33 @@ export class EditDialogComponent {
   }
 
   // Method to handle form submission
-  onSubmit(employeeForm: any): void {
-    const id = this.data.id; // Get the employee ID from the data passed to the dialog
-    if (!id) {
-      console.error('Employee ID is required for editing.');
-      return;
-    }
-    if (this.employeeForm.valid) {
-      this.employeeService.editEmployee(id, employeeForm).subscribe({
-        next: (response) => {
-          console.log('Employee edited successfully:', response);
-          alert('Employee edited successfully!');
-          this.dialogRef.close(true); // signal success
-        },
-        error: (err) => {
-          console.error('Error editing employee:', err);
-          alert('Failed to edit employee. Please try again.');
-        }
-      });
-    }
+  onSubmit(): void {
+  const id = this.data?.id;
+  if (!id) {
+    console.error('Employee ID is required for editing.');
+    return;
   }
+
+  if (this.employeeForm.valid) {
+    this.http.patch<any>(
+      `http://localhost:8443/api/v1/employee/update/${id}`,
+      this.employeeForm.value,
+      { observe: 'response' }
+    ).subscribe({
+      next: (response) => {
+        console.log('Employee edited successfully:', response);
+        alert('Employee edited successfully!');
+        this.dialogRef.close(true); // signal success
+      },
+      error: (err) => {
+        console.error('Error editing employee:', err);
+        alert('Failed to edit employee. Please try again.');
+      }
+    });
+  } else {
+    console.warn('Form is invalid:', this.employeeForm.errors);
+  }
+}
 
   onCancel(): void {
     this.dialogRef.close();
