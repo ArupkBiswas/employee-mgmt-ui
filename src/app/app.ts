@@ -75,6 +75,10 @@ export class App implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.getEmployees(); // Refresh list
+        this.snackBar.open('Employee added successfully', 'Close', {
+          duration: 6000,
+          panelClass: ['snackbar-success']
+        });
       }
     });
   }
@@ -91,7 +95,8 @@ export class App implements OnInit {
       if (result) {
         this.getEmployees(); // Refresh list after edit
         this.snackBar.open('Employee updated successfully', 'Close', {
-          duration: 6000
+          duration: 6000,
+          panelClass: ['snackbar-success']
         });
       }
     });
@@ -106,7 +111,8 @@ export class App implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'deleted') {
         this.snackBar.open('Employee deleted successfully', 'Close', {
-          duration: 6000
+          duration: 6000,
+          panelClass: ['snackbar-error']
         });
         this.getEmployees(); // Refresh list after confirmation
       }
