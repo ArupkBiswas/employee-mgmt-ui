@@ -1,10 +1,11 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EmployeeService } from './employee.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-employee-dialog',
@@ -15,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class EmployeeDialogComponent {
   employeeForm: FormGroup;
+  private snackBar =  inject(MatSnackBar);
 
   constructor(
     private dialogRef: MatDialogRef<EmployeeDialogComponent>,
@@ -48,7 +50,10 @@ export class EmployeeDialogComponent {
         }
       });
     } else {
-      alert('Please fill in all required fields.');
+      this.snackBar.open('Please enter all required fields', 'Close', {
+          duration: 6000,
+          panelClass: ['snackbar-error']
+        });
     }
   }
 
