@@ -1,45 +1,49 @@
-import { Component, inject, NgModule, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
-import { routes } from './app.routes';
+
+// Standalone Router
+import { RouterOutlet } from '@angular/router';
+
+// Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
-import { CommonModule } from '@angular/common';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+// Angular Core Modules
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+
+// Components
 import { EmployeeDialogComponent } from './employee-dialog/employee-dialog.component';
 import { ConfirmationDialog } from './confirmation-dialog/confirmation-dialog.component';
 import { EditDialogComponent } from './edit-dialog/edit-dialog.component';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-// Import the necessary modules and components
 @Component({
-  selector: 'app-root',
+  selector: 'app-employee',
   standalone: true,
-  imports: [RouterModule,
+  templateUrl: './app.html',
+  styleUrls: ['./app.scss'],
+  encapsulation: ViewEncapsulation.None,
+
+  imports: [
+    CommonModule,
     MatToolbarModule,
     MatTableModule,
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule, 
-    ReactiveFormsModule, 
-    MatDatepickerModule, 
-    MatNativeDateModule,
-    routes,
-    CommonModule],
-  templateUrl: './app.html',
-  styleUrls: ['./app.scss'],
-  encapsulation: ViewEncapsulation.None
+    MatInputModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ]
 })
-
-// Main application component
 export class App implements OnInit {
 
   displayedColumns: string[] = [
@@ -56,17 +60,16 @@ export class App implements OnInit {
     'departmentId',
     'actions'
   ];
+
   employees: any[] = [];
-  private snackBar =  inject(MatSnackBar);
+  private snackBar = inject(MatSnackBar);
+
+  constructor(private dialog: MatDialog, private http: HttpClient) {}
 
   ngOnInit() {
     this.getEmployees();
   }
 
-  // Inject MatDialog to open dialogs
-  constructor(private dialog: MatDialog, private http: HttpClient) {}
-
-  // Open dialog to add new employee
   addEmployee() {
     const dialogRef = this.dialog.open(EmployeeDialogComponent, {
       width: '600px'
@@ -74,7 +77,7 @@ export class App implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.getEmployees(); // Refresh list
+        this.getEmployees();
         this.snackBar.open('Employee added successfully', 'Close', {
           duration: 6000,
           panelClass: ['snackbar-success']
@@ -83,17 +86,15 @@ export class App implements OnInit {
     });
   }
 
-  // Open edit dialog
   openEditDialog(employee: any) {
-    
     const dialogRef = this.dialog.open(EditDialogComponent, {
       width: '600px',
-      data: employee // Pass the employee data to the dialog
+      data: employee
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.getEmployees(); // Refresh list after edit
+        this.getEmployees();
         this.snackBar.open('Employee updated successfully', 'Close', {
           duration: 6000,
           panelClass: ['snackbar-success']
@@ -102,10 +103,12 @@ export class App implements OnInit {
     });
   }
 
-  // Open confirmation dialog for deletion
   openDialogForDelete(employee: any) {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
-      data: { message: `[ ID : ${employee.id} ] ${employee.firstName} ${employee.lastName}, Are you sure you want to delete this employee ?`, employeeId: employee.id }
+      data: {
+        message: `[ ID : ${employee.id} ] ${employee.firstName} ${employee.lastName}, Are you sure you want to delete this employee ?`,
+        employeeId: employee.id
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -114,12 +117,11 @@ export class App implements OnInit {
           duration: 6000,
           panelClass: ['snackbar-error']
         });
-        this.getEmployees(); // Refresh list after confirmation
+        this.getEmployees();
       }
     });
   }
 
-  // Fetch employees from the server
   getEmployees() {
     this.http.get<any[]>('http://localhost:8443/api/v1/employee/all').subscribe({
       next: (data) => this.employees = data,
@@ -127,4 +129,3 @@ export class App implements OnInit {
     });
   }
 }
-
