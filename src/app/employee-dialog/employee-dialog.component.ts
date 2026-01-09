@@ -1,4 +1,5 @@
 import { Component, inject, Inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EmployeeService } from './employee.service';
@@ -6,17 +7,35 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+
+
+interface Roles{
+  value: string;
+  viewValue: string;
+}
 
 @Component({
   selector: 'app-employee-dialog',
   templateUrl: './employee-dialog.component.html',
   standalone: true,
   styleUrls: ['./employee-dialog.component.scss'],
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule]
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatDatepickerModule, MatIconModule, CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideNativeDateAdapter() ]
 })
 export class EmployeeDialogComponent {
   employeeForm: FormGroup;
   private snackBar =  inject(MatSnackBar);
+  roles: Roles[] = [
+    {value: 'ADMIN', viewValue: 'Admin'},
+    {value: 'USER', viewValue: 'User'}
+  ];
+  hidePassword = true;
 
   constructor(
     private dialogRef: MatDialogRef<EmployeeDialogComponent>,
@@ -29,12 +48,15 @@ export class EmployeeDialogComponent {
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phoneNumber: [''],
-      joiningDate: ['', Validators.required],
+      joiningDate: [''],
       jobId: [''],
       salary: [''],
       commissionPct: [''],
       managerId: [''],
-      departmentId: ['']
+      departmentId: [''],
+      role: ['USER', Validators.required],
+      password: ['', Validators.required],
+      enabled : [true]
     });
   }
 

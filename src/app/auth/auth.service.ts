@@ -2,34 +2,61 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
+export interface LoginResponse {
+  token: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'http://your-api-url.com/api'; // change to your backend API
 
-  constructor(private http: HttpClient) {}
+  private readonly baseUrl = 'http://localhost:8443/api/auth';
 
-  login(email: string, password: string): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(`${this.baseUrl}/login`, { email, password })
-      .pipe(
-        tap(res => {
-          // store token
-          localStorage.setItem('auth_token', res.token);
-        })
-      );
+  constructor(private http: HttpClient) {
+    console.log('HttpClient injected ✅');
   }
 
-  logout() {
+  login(username: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(
+      `${this.baseUrl}/login`,
+      {
+        username,
+        password
+      }
+    ).pipe(
+      tap(response => {
+        localStorage.setItem('auth_token', response.token);
+      })
+    );
+  }
+
+  logout(): void {
     localStorage.removeItem('auth_token');
-    // maybe more cleanup
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('auth_token');
+    return !!this.getToken();
   }
 
   getToken(): string | null {
     return localStorage.getItem('auth_token');
+  }
+
+  getDecodedToken(): any | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload));
+    } catch {
+      return null;
+    }
+  }
+
+  getUsernameFromToken(): string | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.sub || null;
   }
 }
