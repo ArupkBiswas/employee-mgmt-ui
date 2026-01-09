@@ -1,49 +1,79 @@
-<mat-card class="login-card">
-  <mat-card-title>Login</mat-card-title>
-  <mat-card-content>
+<div class="login-container">
+  <mat-card class="login-card">
+
+    <mat-card-title>Login</mat-card-title>
+    <mat-card-subtitle>Please sign in to continue</mat-card-subtitle>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-      <mat-form-field appearance="fill" class="full-width">
+      <!-- Email -->
+      <mat-form-field appearance="outline" class="full-width">
         <mat-label>Email</mat-label>
-        <input matInput type="email" formControlName="email">
+        <input
+          matInput
+          type="email"
+          formControlName="username"
+          autocomplete="username"
+        />
 
-        <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+        <mat-error *ngIf="
+          loginForm.get('username')?.hasError('required') &&
+          loginForm.get('username')?.touched
+        ">
           Email is required
         </mat-error>
 
-        <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
-          Enter a valid email
+        <mat-error *ngIf="
+          loginForm.get('username')?.hasError('email') &&
+          loginForm.get('username')?.touched
+        ">
+          Enter a valid email address
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="fill" class="full-width">
+      <!-- Password -->
+      <mat-form-field appearance="outline" class="full-width">
         <mat-label>Password</mat-label>
 
-        <input 
+        <input
           matInput
           [type]="hidePassword ? 'password' : 'text'"
           formControlName="password"
-        >
+          autocomplete="current-password"
+        />
 
-        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
-          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          aria-label="Toggle password visibility"
+          (click)="hidePassword = !hidePassword"
+        >
+          <mat-icon>
+            {{ hidePassword ? 'visibility_off' : 'visibility' }}
+          </mat-icon>
         </button>
 
-        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+        <mat-error *ngIf="
+          loginForm.get('password')?.hasError('required') &&
+          loginForm.get('password')?.touched
+        ">
           Password is required
         </mat-error>
       </mat-form-field>
 
-      <button 
-        mat-raised-button 
-        color="primary" 
+      <!-- Submit Button -->
+      <button
+        mat-raised-button
+        color="primary"
+        class="full-width"
         type="submit"
-        [disabled]="loginForm.invalid"
+        [disabled]="loginForm.invalid || loading"
       >
-        Login
+        {{ loading ? 'Logging in...' : 'Login' }}
       </button>
 
     </form>
-  </mat-card-content>
-</mat-card>
+
+  </mat-card>
+</div>

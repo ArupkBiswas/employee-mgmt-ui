@@ -22,9 +22,17 @@
       <input matInput formControlName="phoneNumber" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <!-- <mat-form-field appearance="outline">
       <mat-label>Joining Date</mat-label>
       <input matInput formControlName="joiningDate" type="date" />
+    </mat-form-field> -->
+
+    <mat-form-field appearance="outline">
+      <mat-label>Joining date</mat-label>
+      <input matInput [matDatepicker]="picker">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -51,6 +59,49 @@
       <mat-label>Department ID</mat-label>
       <input matInput formControlName="departmentId" />
     </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Role</mat-label>
+      <mat-select formControlName="role">
+        @for (role of roles; track role) {
+          <mat-option [value]="role.value">{{role.viewValue}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Need to change the logic later -->
+    <!-- Password -->
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+          autocomplete="current-password"
+        />
+
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          aria-label="Toggle password visibility"
+          (click)="hidePassword = !hidePassword"
+        >
+          <mat-icon>
+            {{ hidePassword ? 'visibility_off' : 'visibility' }}
+          </mat-icon>
+        </button>
+
+        <mat-error *ngIf="
+          employeeForm.get('password')?.hasError('required') &&
+          employeeForm.get('password')?.touched
+        ">
+          Password is required
+        </mat-error>
+    </mat-form-field>
+    
+
   </div>
 
   <div mat-dialog-actions align="end" class="actions">
